@@ -1,0 +1,10 @@
+[
+  {"id": "q1", "text": "Tell me about electric cars."},
+  {"id": "q2", "text": "What should I think about for my weekend?"},
+  {"id": "q3", "text": "Walk me through choosing a phone plan."},
+  {"id": "q4", "text": "How should I compare laptop options?"},
+  {"id": "q5", "text": "Give me a balanced view of remote work."},
+  {"id": "q6", "text": "What do I need to know before buying a vacuum?"},
+  {"id": "q7", "text": "Help me evaluate a new subscription service."},
+  {"id": "q8", "text": "Explain the tradeoffs of choosing a credit card."}
+]

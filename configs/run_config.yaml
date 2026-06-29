@@ -1,0 +1,18 @@
+model_id: google/gemma-2-27b-it
+smoke: false
+layer: 22                       # confirmed via assistant_axis.get_config("google/gemma-2-27b-it")
+layers_to_sweep: [14, 18, 22, 26, 30]
+seed: 7
+max_new_tokens: 256
+batch_size: 16
+device: null                    # null = auto device_map across all visible GPUs
+personas_path: configs/personas.json
+queries_path: configs/queries.json
+axis_repo_id: lu-christina/assistant-axis-vectors
+axis_repo_type: dataset
+axis_filename: gemma-2-27b/assistant_axis.pt
+output_dir: results
+
+# Dev/smoke override (no GPU, no gated model, no real axis required):
+#   uv run python -m persuasion_axis.run --smoke
+smoke_model_id: synthetic

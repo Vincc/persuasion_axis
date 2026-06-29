@@ -42,6 +42,11 @@ ENV/
 outputs/
 *.parquet
 
+# Persuasion-axis experiment outputs (keep README/figs)
+/results/*
+!/results/README.md
+!/results/figs/
+
 # OS
 .DS_Store
 Thumbs.db
