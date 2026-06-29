@@ -76,6 +76,10 @@ def run_experiment(
         axis = load_axis(axis_path)
 
     pm = load_model(model_id, smoke=smoke, device=device)
+    # Pass the real tokenizer so build_conversation can fold the system prompt into the user
+    # turn for chat templates that don't support a system role (e.g. Gemma 2). The synthetic
+    # smoke-test tokenizer has no real chat template, so it keeps the literal system+user shape.
+    conversation_tokenizer = None if smoke else pm.tokenizer
 
     # Build the full persona x query grid up front so extraction can batch across it.
     grid_index: List[Dict[str, Any]] = []
@@ -83,7 +87,7 @@ def run_experiment(
     for persona in personas:
         for query in queries:
             grid_index.append({"persona_id": persona["id"], "query_id": query["id"]})
-            conversations.append(build_conversation(persona, query))
+            conversations.append(build_conversation(persona, query, conversation_tokenizer))
 
     activations = extract_response_activations(
         pm,
