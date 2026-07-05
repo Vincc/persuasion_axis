@@ -50,3 +50,7 @@ outputs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Misc
+/persuasion_axis/SETUP.md
+runpodctl.tar.gz
