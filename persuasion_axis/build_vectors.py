@@ -62,6 +62,7 @@ def build_persona_vectors(
     smoke: bool = False,
     output_dir: str = "results/persona_vectors",
     batch_size: int = 16,
+    max_new_tokens: int = 256,
     device: Optional[str] = None,
     personas_dir: str = str(DEFAULT_PERSONAS_DIR),
     questions_path: str = str(DEFAULT_QUESTIONS_PATH),
@@ -94,7 +95,7 @@ def build_persona_vectors(
             pm,
             conversations,
             layers=layers,
-            max_new_tokens=256,
+            max_new_tokens=max_new_tokens,
             temperature=0.0,
             seed=0,
             batch_size=batch_size,
@@ -116,6 +117,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--smoke", action="store_true", help="Run with synthetic model for plumbing test")
     parser.add_argument("--output-dir", default="results/persona_vectors")
     parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--max-new-tokens", type=int, default=256)
     parser.add_argument("--device", default=None)
     parser.add_argument("--personas-dir", default=str(DEFAULT_PERSONAS_DIR))
     parser.add_argument("--questions", dest="questions_path", default=str(DEFAULT_QUESTIONS_PATH))
@@ -130,6 +132,7 @@ def main() -> None:
         smoke=args.smoke,
         output_dir=args.output_dir,
         batch_size=args.batch_size,
+        max_new_tokens=args.max_new_tokens,
         device=args.device,
         personas_dir=args.personas_dir,
         questions_path=args.questions_path,
