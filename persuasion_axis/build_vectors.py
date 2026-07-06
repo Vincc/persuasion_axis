@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import torch
+from tqdm import tqdm
 
 from .data import build_conversation
 from .extract import extract_response_activations, get_config, load_model
@@ -85,26 +86,37 @@ def build_persona_vectors(
         questions = questions[:2]
 
     results: Dict[str, torch.Tensor] = {}
-    for persona_name, system_prompts in personas:
+    persona_bar = tqdm(personas, desc="personas", unit="persona")
+    for persona_name, system_prompts in persona_bar:
+        persona_bar.set_postfix({"current": persona_name})
         conversations = [
             build_conversation({"system_prompt": p}, {"text": q}, conversation_tokenizer)
             for p in system_prompts
             for q in questions
         ]
-        activation_dicts = extract_response_activations(
-            pm,
-            conversations,
-            layers=layers,
-            max_new_tokens=max_new_tokens,
-            temperature=0.0,
-            seed=0,
-            batch_size=batch_size,
-        )
+        activation_dicts: List[Dict[int, torch.Tensor]] = []
+        conv_bar = tqdm(total=len(conversations), desc=f"  {persona_name}", unit="conv", leave=False)
+        for i in range(0, len(conversations), batch_size):
+            chunk = conversations[i : i + batch_size]
+            activation_dicts.extend(
+                extract_response_activations(
+                    pm,
+                    chunk,
+                    layers=layers,
+                    max_new_tokens=max_new_tokens,
+                    temperature=0.0,
+                    seed=0,
+                    batch_size=batch_size,
+                )
+            )
+            conv_bar.update(len(chunk))
+        conv_bar.close()
+
         vector = _average_activations(activation_dicts, layers)
         out_path = output_dir_p / f"{persona_name}.pt"
         torch.save(vector, out_path)
         results[persona_name] = vector
-        print(f"  {persona_name}: saved {out_path}  shape={tuple(vector.shape)}")
+        tqdm.write(f"  {persona_name}: saved {out_path}  shape={tuple(vector.shape)}")
 
     return results
 

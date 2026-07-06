@@ -67,7 +67,7 @@ def run_experiment(
 
     if axis_path is None and smoke:
         # Synthetic placeholder axis, correctly sized so every swept layer (including `layer`)
-        # is indexable -- axis[layer] must not go out of bounds.
+        # is indexable -- axis[layer] musst not go out of bounds.
         total_layers = max(SYNTHETIC_HIDDEN_SIZE, max(all_layers) + 1)
         axis = torch.randn(total_layers, SYNTHETIC_HIDDEN_SIZE, dtype=torch.float32)
     else:
